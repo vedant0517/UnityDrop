@@ -1,15 +1,18 @@
 import { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { getLocationDetails } from '../utils/location';
 import toast from 'react-hot-toast';
 
 const Register = () => {
+  const [searchParams] = useSearchParams();
+  const roleParam = searchParams.get('role');
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    role: 'donor',
+    role: roleParam || 'donor',
     phone: '',
     city: '',
     pincode: ''
@@ -90,11 +93,57 @@ const Register = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-2">
-              Join Social Mentor
+              {formData.role === 'donor' ? '🎁 Donor Sign Up' : 
+               formData.role === 'volunteer' ? '🤝 Volunteer Sign Up' : 
+               '🏢 Organization Sign Up'}
             </h2>
             <p className="text-slate-400 text-sm">
-              Start making an impact today
+              {formData.role === 'donor' ? 'Donate food & essentials' : 
+               formData.role === 'volunteer' ? 'Deliver donations & earn points' : 
+               'Manage team & campaigns'}
             </p>
+          </div>
+
+          {/* Role Selector */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-slate-300 mb-3">
+              Select Your Role
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, role: 'donor' })}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  formData.role === 'donor'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                🎁 Donor
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, role: 'volunteer' })}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  formData.role === 'volunteer'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                🤝 Volunteer
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, role: 'organization' })}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  formData.role === 'organization'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                🏢 Org
+              </button>
+            </div>
           </div>
 
           {/* Error Message */}
@@ -156,24 +205,6 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
               />
-            </div>
-
-            {/* Role */}
-            <div>
-              <label htmlFor="role" className="block text-sm font-medium text-slate-300 mb-2">
-                I am a
-              </label>
-              <select
-                id="role"
-                name="role"
-                className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 text-white rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition"
-                value={formData.role}
-                onChange={handleChange}
-              >
-                <option value="donor">Donor</option>
-                <option value="volunteer">Volunteer</option>
-                <option value="admin">Admin</option>
-              </select>
             </div>
 
             {/* Phone */}

@@ -1,15 +1,19 @@
-import { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const Login = () => {
+  const [searchParams] = useSearchParams();
+  const roleParam = searchParams.get('role');
+  
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(roleParam || 'donor');
 
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -59,11 +63,55 @@ const Login = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-2">
-              Social Mentor
+              {selectedRole === 'donor' ? '🎁 Donor Login' : 
+               selectedRole === 'volunteer' ? '🤝 Volunteer Login' : 
+               '🏢 Organization Login'}
             </h2>
             <p className="text-slate-400 text-sm">
               Welcome back! Sign in to continue
             </p>
+          </div>
+
+          {/* Role Selector */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-slate-300 mb-3">
+              Select Your Role
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedRole('donor')}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  selectedRole === 'donor'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                🎁 Donor
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedRole('volunteer')}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  selectedRole === 'volunteer'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                🤝 Volunteer
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedRole('organization')}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
+                  selectedRole === 'organization'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                🏢 Org
+              </button>
+            </div>
           </div>
 
           {/* Error Message */}
